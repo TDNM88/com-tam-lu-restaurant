@@ -1,4 +1,4 @@
-# Cơm Tấm LU app
+#
 
 *Đồng bộ tự động với các triển khai [v0.dev](https://v0.dev)*
 
