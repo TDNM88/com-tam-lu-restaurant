@@ -1,7 +1,5 @@
 
 
-*Đồng bộ tự động với các triển khai [v0.dev](https://v0.dev)*
-
 [![Triển khai trên Vercel](https://img.shields.io/badge/Triển%20khai%20trên-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/tdnm/v0-com-tam-lu-app)
 [![Xây dựng với v0](https://img.shields.io/badge/Xây%20dựng%20với-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/TdZtNqFS6Ru)
 
