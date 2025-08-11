@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import type { Dispatch, SetStateAction } from "react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { motion } from "framer-motion" // Giữ framer-motion để thêm hiệu ứng mượt mà
+import { Separator } from "@radix-ui/react-separator"
 
 export default function LandingPage() {
   const [showImages, setShowImages] = useState(true)
@@ -19,11 +20,17 @@ export default function LandingPage() {
       </div>
       <TableOfContents />
       <IntroSection />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <MainFeaturesSection />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />  
       <DetailedGuideSection />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <RoadmapSection />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <FeatureSection />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <DisplayControls showImages={showImages} setShowImages={setShowImages} />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <GallerySection showImages={showImages} />
       <FeatureVideoSection />
       <TestimonialsSection />
@@ -48,14 +55,19 @@ function IntroSection() {
     >
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Giới thiệu về
-          <Image src="/logoQ.png" alt="Q+AI" width={150} height={150} className="inline-block ml-2" />
+          Chuyện của <Image src="/logoQ.png" alt="Q+AI" width={150} height={150} className="inline-block ml-2" /> 
         </h2>
         <p className="mt-4 text-lg text-neutral-300">
         Ở Việt Nam, cứ 10 quán F&B thì 9 quán đang phải vật lộn với các <b>vấn đề lặp đi lặp lại</b> làm ảnh hưởng đến doanh thu và lòng trung thành của khách hàng: <b> nhân sự thiếu ổn định</b>, <b>quy trình phục vụ rườm rà</b>, <b>đơn sai sót</b>, <b>khách phải chờ lâu</b>, <b>chi phí quản lý cao</b>.
         </p>
         <p className="mt-4 text-lg text-neutral-300">
-          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> ra đời để thay đổi điều đó, và trở thành <b>giải pháp toàn diện</b> để mọi loại hình kinh doanh F&B tạo ra <b>trải nghiệm khách hàng tuyệt vời</b> và chuyển hóa chúng thành <b>tăng trưởng bền vững</b>.
+          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> ra đời để thay đổi điều đó, và sẽ là <b>giải pháp toàn diện</b> giúp mọi loại hình kinh doanh F&B tạo ra <b>trải nghiệm khách hàng tuyệt vời</b> và chuyển hóa chúng thành <b>tăng trưởng bền vững</b>.
+        </p>
+        <p className="mt-4 text-lg text-neutral-300">
+          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> khởi đầu Sứ mệnh của mình bằng một mã QR nhỏ, nhưng đủ sức định nghĩa lại cách tiếp cận và hành trình phục vụ khách hàng. Sẽ không còn cảnh họ phải xếp hàng dài chờ đến lượt được order tại quầy, hoặc đợi chán chê chưa thấy nhân viên tới phục vụ... để rồi những điều như vậy gây ra ảnh hưởng tiêu cực đến trải nghiệm sử dụng dịch vụ. 
+        </p>
+        <p className="mt-4 text-lg text-neutral-300">
+          Với <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" />, họ chỉ cần chọn một chỗ ưa thích, rồi thảnh thơi chọn món phù hợp trên chính chiếc điện thoại của mình. Và phần còn lại hãy để công nghệ của <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> làm nhiệm vụ và mang về kết quả tốt nhất cho tất cả chúng ta!
         </p>
         <p className="mt-4 text-lg text-neutral-300"> 
           Linh hồn của <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> là một Mô hình AI được huấn luyện chuyên sâu bởi các phương pháp đặc biệt, đảm bảo sẽ giúp hoạt động kinh doanh của bạn được <b>quản lý hiệu quả</b>, <b>vận hành dễ dàng</b>, <b>phục vụ nhanh chóng</b> – và mang lại <b>lợi nhuận cao hơn</b>.
