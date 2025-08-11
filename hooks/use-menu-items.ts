@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from "react"
 import type { MenuItem, ApiResponse } from "@/lib/types"
+import { supabaseClient } from "@/lib/supabase-client"
+
+// Detect production without referencing process.env in client
+const isProduction = typeof window !== "undefined"
+  ? !/^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname)
+  : true
 
 export function useMenuItems() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
@@ -49,6 +55,46 @@ export function useMenuItems() {
     ...(item.image !== undefined && { imageUrl: item.image }),
   })
 
+  const buildAuthHeaders = async () => {
+    const base: Record<string, string> = { "Content-Type": "application/json" }
+    try {
+      const { data } = await supabaseClient.auth.getSession()
+      const token = data?.session?.access_token
+      if (token) {
+        // Try to decode role from JWT to decide whether to use dev fallback
+        let role: string | undefined
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1] || ""))
+          role = payload?.app_metadata?.role || payload?.user_metadata?.role
+        } catch {
+          // ignore decode errors
+        }
+
+        const privileged = role === "admin" || role === "staff" || role === "owner"
+        if (privileged) {
+          base["Authorization"] = `Bearer ${token}`
+          return { headers: base, devFallback: false }
+        }
+        // Token có nhưng role không đủ quyền → trong dev dùng fallback, tránh gửi Authorization
+        if (!isProduction) {
+          base["X-Role"] = "admin"
+          return { headers: base, devFallback: true }
+        }
+        // production: gửi token (sẽ bị 403 nếu không đủ quyền, đúng mong đợi)
+        base["Authorization"] = `Bearer ${token}`
+        return { headers: base, devFallback: false }
+      }
+    } catch {
+      // ignore
+    }
+    // Không có token: dev fallback
+    if (!isProduction) {
+      base["X-Role"] = "admin"
+      return { headers: base, devFallback: true }
+    }
+    return { headers: base, devFallback: false }
+  }
+
   const fetchMenuItems = async () => {
     try {
       setLoading(true)
@@ -72,9 +118,11 @@ export function useMenuItems() {
 
   const createMenuItem = async (item: Omit<MenuItem, "id" | "createdAt" | "updatedAt">) => {
     try {
-      const response = await fetch("/api/menu-items", {
+      const { headers, devFallback } = await buildAuthHeaders()
+      const url = devFallback ? "/api/menu-items?role=admin" : "/api/menu-items"
+      const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: headers,
         body: JSON.stringify(toBackendPayload(item)),
       })
 
@@ -94,9 +142,11 @@ export function useMenuItems() {
 
   const updateMenuItem = async (id: string, updates: Partial<MenuItem>) => {
     try {
-      const response = await fetch(`/api/menu-items/${id}`, {
+      const { headers, devFallback } = await buildAuthHeaders()
+      const url = devFallback ? `/api/menu-items/${id}?role=admin` : `/api/menu-items/${id}`
+      const response = await fetch(url, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: headers,
         body: JSON.stringify(toBackendPayload(updates)),
       })
 
@@ -116,8 +166,11 @@ export function useMenuItems() {
 
   const deleteMenuItem = async (id: string) => {
     try {
-      const response = await fetch(`/api/menu-items/${id}`, {
+      const { headers, devFallback } = await buildAuthHeaders()
+      const url = devFallback ? `/api/menu-items/${id}?role=admin` : `/api/menu-items/${id}`
+      const response = await fetch(url, {
         method: "DELETE",
+        headers: headers,
       })
 
       const raw = await response.json()

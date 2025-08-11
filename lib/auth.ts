@@ -18,6 +18,22 @@ function parseCookies(req: Request): Record<string, string> {
   }, {})
 }
 
+function isLocalRequest(req: Request): boolean {
+  try {
+    const url = new URL(req.url)
+    const host = url.hostname
+    // localhost or common private network ranges
+    if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/i.test(host)) return true
+    if (/^192\.168\./.test(host)) return true
+    if (/^10\./.test(host)) return true
+    // 172.16.0.0 – 172.31.255.255
+    if (/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(host)) return true
+    return false
+  } catch {
+    return false
+  }
+}
+
 function getBearerToken(req: Request): string | null {
   const h = req.headers
   const auth = h.get("authorization") || h.get("Authorization") || ""
@@ -32,8 +48,9 @@ async function getRoleFromSupabase(req: Request): Promise<{ role: Role; userId?:
   try {
     const token = getBearerToken(req)
     if (!token) return { role: "anonymous" }
-    const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
-    const anon = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const env: any = (globalThis as any).process?.env || {}
+    const url = env.SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL
+    const anon = env.SUPABASE_ANON_KEY || env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     if (!url || !anon) return { role: "anonymous" }
     const client = createClient(url, anon, {
       auth: { persistSession: false, autoRefreshToken: false },
@@ -50,11 +67,36 @@ async function getRoleFromSupabase(req: Request): Promise<{ role: Role; userId?:
 }
 
 export async function getRequestRole(req: Request): Promise<Role> {
-  // 1) Try Supabase JWT
+  const NODE_ENV: string = ((globalThis as any).process?.env?.NODE_ENV as string) || "development"
+  const local = isLocalRequest(req)
+
+  // 1) On local/private networks, prioritize dev fallbacks over JWT to allow override
+  if (local) {
+    try {
+      const h = req.headers
+      const headerRole = (h.get("x-role") || h.get("X-Role") || "").toLowerCase()
+      if (headerRole === "admin" || headerRole === "staff" || headerRole === "customer") {
+        return headerRole as Role
+      }
+      const auth = h.get("authorization") || h.get("Authorization") || ""
+      const roleMatch = auth.match(/role\s*=?\s*(admin|staff|customer)/i)
+      if (roleMatch) return roleMatch[1].toLowerCase() as Role
+      const url = new URL(req.url)
+      const qpRole = (url.searchParams.get("role") || "").toLowerCase()
+      if (qpRole === "admin" || qpRole === "staff" || qpRole === "customer") {
+        return qpRole as Role
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // 2) Try Supabase JWT
   const fromJwt = await getRoleFromSupabase(req)
   if (fromJwt.role !== "anonymous") return fromJwt.role
-  // 2) Dev fallbacks (disabled in production)
-  if (process.env.NODE_ENV === "production") return "anonymous"
+
+  // 3) Dev fallbacks when not production or when local/private networks
+  if (NODE_ENV === "production" && !local) return "anonymous"
   try {
     const h = req.headers
     const headerRole = (h.get("x-role") || h.get("X-Role") || "").toLowerCase()
@@ -80,10 +122,18 @@ export function isStaffOrAdmin(role: Role): boolean {
 }
 
 export async function auth(req: Request): Promise<{ role: Role; userId?: string }> {
+  const userId = req.headers.get("x-user-id") || req.headers.get("X-User-Id") || undefined
+  const local = isLocalRequest(req)
+  // On local/private networks, allow header/query role to override before JWT
+  if (local) {
+    const devRole = await getRequestRole(req)
+    if (devRole !== "anonymous") {
+      return { role: devRole, userId }
+    }
+  }
   const fromJwt = await getRoleFromSupabase(req)
   if (fromJwt.role !== "anonymous") return fromJwt
   const role = await getRequestRole(req)
-  const userId = req.headers.get("x-user-id") || req.headers.get("X-User-Id") || undefined
   return { role, userId }
 }
 

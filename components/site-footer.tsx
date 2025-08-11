@@ -22,7 +22,7 @@ export function SiteFooter({ className }: { className?: string }) {
               <img src="/tdnm.png" alt="CTCP Giải pháp Truyền thông số NDP" className="h-full w-full object-cover" />
             </div>
             <p className="truncate text-sm text-neutral-700">
-              <span className="font-semibold text-neutral-900">AI F&B</span> · Hệ thống gọi món QR hiện đại
+              <span className="font-semibold text-neutral-900">QUÁN AI</span> · AI tại bàn | Nâng tầm mọi trải nghiệm
             </p>
           </div>
           <div className="flex items-center gap-3 text-sm text-neutral-700">
