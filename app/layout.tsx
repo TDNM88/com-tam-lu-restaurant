@@ -9,13 +9,12 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Cơm Tấm LU - Hệ thống gọi món QR Code",
+  title: "Q+AI - Hệ thống gọi món QR Code",
   description:
-    "Hệ thống gọi món hiện đại cho nhà hàng Cơm Tấm LU với giao diện sang trọng và trải nghiệm người dùng tối ưu",
-  keywords: "cơm tấm, nhà hàng, gọi món, QR code, Lu food",
-  authors: [{ name: "Cơm Tấm LU" }],
+    "Hệ thống gọi món hiện đại cho nhà hàng với giao diện sang trọng và trải nghiệm người dùng tối ưu",
+  keywords: "hệ thống gọi món, QR code",
+  authors: [{ name: "Q+AI" }],
   robots: "index, follow",
-    generator: 'v0.dev'
 }
 
 export const viewport: Viewport = {
