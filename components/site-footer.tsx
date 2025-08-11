@@ -19,10 +19,10 @@ export function SiteFooter({ className }: { className?: string }) {
         <div className="flex h-16 items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative h-8 w-8 overflow-hidden rounded-md ring-1 ring-inset ring-neutral-300">
-              <img src="/tdnm.png" alt="CTCP Giải pháp Truyền thông số NDP" className="h-full w-full object-cover" />
+              <img src="/logoQ.png" alt="CTCP Giải pháp Truyền thông số NDP" className="h-full w-full object-cover" />
             </div>
             <p className="truncate text-sm text-neutral-700">
-              <span className="font-semibold text-neutral-900">QUÁN AI</span> · AI tại bàn | Nâng tầm mọi trải nghiệm
+              <span className="font-semibold text-neutral-900">Q+AI</span> · AI tại bàn | Nâng tầm mọi trải nghiệm
             </p>
           </div>
           <div className="flex items-center gap-3 text-sm text-neutral-700">

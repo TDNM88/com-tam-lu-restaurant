@@ -17,16 +17,16 @@ export default function LandingPage() {
         <Image src="/images/holo.png" alt="Modern tech background" fill className="object-cover opacity-20 mix-blend-overlay" />
         <div className="absolute inset-0 bg-gradient-to-br from-teal-900/40 via-teal-800/50 to-neutral-900/70" />
       </div>
-      <IntroSection />
       <TableOfContents />
+      <IntroSection />
       <MainFeaturesSection />
       <DetailedGuideSection />
+      <RoadmapSection />
       <FeatureSection />
       <DisplayControls showImages={showImages} setShowImages={setShowImages} />
       <GallerySection showImages={showImages} />
       <FeatureVideoSection />
       <TestimonialsSection />
-      <RoadmapSection />
       <FAQSection />
       <SocialProofSection />
       <CTASection />
@@ -47,21 +47,24 @@ function IntroSection() {
       viewport={{ once: true }}
     >
       <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Giới thiệu về QuánAI</h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          Giới thiệu về
+          <Image src="/logoQ.png" alt="Q+AI" width={150} height={150} className="inline-block ml-2" />
+        </h2>
         <p className="mt-4 text-lg text-neutral-300">
-          Bạn đang đối mặt với vấn đề <b>quản lý nhân sự</b>, <b>quy trình rườm rà</b>, <b>sai sót đơn hàng</b>, <b>khách chờ lâu</b>, <b>chi phí quản lý cao</b>?
+        Ở Việt Nam, cứ 10 quán F&B thì 9 quán đang phải vật lộn với các <b>vấn đề lặp đi lặp lại</b> làm ảnh hưởng đến doanh thu và lòng trung thành của khách hàng: <b> nhân sự thiếu ổn định</b>, <b>quy trình phục vụ rườm rà</b>, <b>đơn sai sót</b>, <b>khách phải chờ lâu</b>, <b>chi phí quản lý cao</b>.
         </p>
         <p className="mt-4 text-lg text-neutral-300">
-          QuánAI là <b>giải pháp toàn diện</b> cho mọi loại hình kinh doanh F&B, giúp bạn <b>tối ưu kinh doanh</b>, <b>tăng trưởng bền vững</b> và mang lại <b>trải nghiệm khách hàng tuyệt vời</b>.
+          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> ra đời để thay đổi điều đó, và trở thành <b>giải pháp toàn diện</b> để mọi loại hình kinh doanh F&B tạo ra <b>trải nghiệm khách hàng tuyệt vời</b> và chuyển hóa chúng thành <b>tăng trưởng bền vững</b>.
         </p>
         <p className="mt-4 text-lg text-neutral-300"> 
-          Không chỉ là phần mềm, QuánAI là <b>công cụ AI thông minh</b> giúp bạn <b>quản lý hiệu quả</b>, <b>vận hành dễ dàng</b>, <b>phục vụ nhanh chóng</b> – và mang lại <b>lợi nhuận cao hơn</b>.
+          Linh hồn của <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> là một Mô hình AI được huấn luyện chuyên sâu bởi các phương pháp đặc biệt, đảm bảo sẽ giúp hoạt động kinh doanh của bạn được <b>quản lý hiệu quả</b>, <b>vận hành dễ dàng</b>, <b>phục vụ nhanh chóng</b> – và mang lại <b>lợi nhuận cao hơn</b>.
         </p>
         <div className="mt-10 flex flex-wrap gap-4 justify-center">
           <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-500">
             <Link href="/signup">Thử Miễn Phí Ngay</Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="border-teal-600 text-teal-400 hover:bg-teal-600 hover:text-white">
+          <Button asChild size="lg" variant="outline" className="border-yellow-600 text-teal-400 hover:bg-teal-600 hover:text-white">
             <Link href="#tinh-nang">Khám Phá Tính Năng</Link>
           </Button>
           <div className="mt-10 flex items-center justify-center gap-4 text-neutral-200">
@@ -81,9 +84,11 @@ function IntroSection() {
                 />
               ))}
             </div>
+            <div className="flex -space-x-2">
             <p className="text-sm">
-              Hơn <b>1,500+</b> quán F&B tăng trưởng cùng QuánAI
+              Hơn <b>1,500+</b> quán F&B tăng trưởng cùng <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" />
             </p>
+            </div>
           </div>
         </div>
       </div>
@@ -135,7 +140,7 @@ function MainFeaturesSection() {
     >
       <div className="mx-auto max-w-3xl text-center">
         <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">Tính Năng Nổi Bật</h3>
-        <p className="mt-3 text-neutral-300">BếpAI không chỉ là công cụ quản lý mà còn là đối tác tăng trưởng, với các tính năng được thiết kế để tối ưu trải nghiệm khách hàng và hiệu quả kinh doanh.</p>
+        <p className="mt-3 text-neutral-300"><Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> không chỉ là công cụ quản lý mà còn là đối tác tăng trưởng, với các tính năng được thiết kế để tối ưu trải nghiệm khách hàng và hiệu quả kinh doanh.</p>
       </div>
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((it, idx) => (
@@ -259,7 +264,7 @@ function DetailedGuideSection() {
       viewport={{ once: true }}
     >
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">Hướng Dẫn Sử Dụng QuánAI</h2>
+        <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">Hướng Dẫn Sử Dụng <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /></h2>
         <p className="mt-4 text-center text-lg text-neutral-300">Các bước rõ ràng, dễ làm theo cho khách và nhân viên — khai thác tối đa sức mạnh AI tại bàn để phục vụ nhanh, chính xác, không chờ đợi.</p>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-2">
@@ -406,7 +411,7 @@ function FeatureVideoSection() {
       viewport={{ once: true }}
     >
       <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Demo Nhanh BếpAI</h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Demo Nhanh <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /></h2>
         <p className="mt-4 text-lg text-neutral-300">Khám phá cách nền tảng AI biến vận hành quán ăn thành trải nghiệm thông minh, hiệu quả và tăng trưởng vượt bậc.</p>
       </div>
       <div className="relative mx-auto mt-10 aspect-video w-full max-w-4xl overflow-hidden rounded-2xl border border-neutral-700 shadow-xl">
@@ -520,7 +525,7 @@ function FeatureSection() {
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Tính Năng Đột Phá</h2>
         <p className="mt-4 text-lg text-neutral-300">
-          QuánAI biến dữ liệu thành sức mạnh: AI tại bàn giúp vận hành mượt mà, tối ưu chi phí và thúc đẩy tăng trưởng doanh thu bền vững.
+          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> biến dữ liệu thành sức mạnh: AI tại bàn giúp vận hành mượt mà, tối ưu chi phí và thúc đẩy tăng trưởng doanh thu bền vững.
         </p>
       </div>
       <div className="mt-12 grid gap-8 lg:grid-cols-3">
@@ -610,7 +615,7 @@ function TestimonialsSection() {
     >
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Khách Hàng Chia Sẻ</h2>
-        <p className="mt-4 text-lg text-neutral-300">Nghe từ những chủ quán đã biến BếpAI thành chìa khóa tăng trưởng kinh doanh thực tế.</p>
+        <p className="mt-4 text-lg text-neutral-300">Nghe từ những chủ quán đã biến <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> thành chìa khóa tăng trưởng kinh doanh thực tế.</p>
       </div>
       <TestimonialsCarousel />
     </motion.section>
@@ -620,7 +625,7 @@ function TestimonialsSection() {
 function TestimonialsCarousel() {
   const slides = [
     {
-      quote: "BếpAI giúp doanh thu tăng vọt 27% chỉ sau 2 tháng, với AI tối ưu menu và upsell thông minh dựa trên dữ liệu thực.",
+      quote: "Doanh thu tăng vọt 27% chỉ sau 2 tháng, với AI tối ưu menu và upsell thông minh dựa trên dữ liệu thực.",
       author: "Anh Minh — Chủ Chuỗi Cơm Tấm",
       avatar: "/placeholder-user.jpg",
     },
@@ -669,7 +674,7 @@ function FAQSection() {
   const faqs = [
     {
       q: "Cần Thiết Bị Đặc Biệt Không?",
-      a: "Không hề. BếpAI chạy mượt trên điện thoại, tablet hoặc PC sẵn có, chỉ cần kết nối internet để đồng bộ realtime và tận hưởng đầy đủ tính năng AI.",
+      a: "Không hề. Toàn bộ ứng dụng thậm chí còn chạy mượt trên điện thoại, tablet hoặc PC sẵn có, chỉ cần kết nối internet để đồng bộ realtime và tận hưởng đầy đủ tính năng AI.",
     },
     {
       q: "Dữ Liệu Có Bảo Mật?",
@@ -753,7 +758,7 @@ function RoadmapSection() {
     >
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Lộ Trình Tương Lai</h2>
-        <p className="mt-4 text-lg text-neutral-300">BếpAI liên tục tiến hóa với các tính năng AI đột phá, giúp quán ăn của bạn dẫn đầu xu hướng F&B thông minh.</p>
+        <p className="mt-4 text-lg text-neutral-300"><Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> liên tục tiến hóa với các tính năng AI đột phá, giúp quán ăn của bạn dẫn đầu xu hướng F&B thông minh.</p>
       </div>
       <div className="mx-auto mt-10 grid max-w-5xl gap-6 sm:grid-cols-2">
         {roadmap.map((r, idx) => (
@@ -785,7 +790,7 @@ function SocialProofSection() {
     >
       <div className="rounded-2xl bg-neutral-800/50 p-8 text-center shadow-lg">
         <p className="text-sm text-neutral-300">
-          QuánAI được tin dùng bởi nhiều mô hình F&B: từ quán nhỏ, cafe, trà sữa đến chuỗi lớn. Triển khai nhanh, chi phí tối ưu, ROI cao — đối tác lý tưởng cho tăng trưởng bền vững.
+        <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> được tin dùng bởi nhiều mô hình F&B: từ quán nhỏ, cafe, trà sữa đến chuỗi lớn. Triển khai nhanh, chi phí tối ưu, ROI cao — đối tác lý tưởng cho tăng trưởng bền vững.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-8 opacity-80">
           <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} />
@@ -838,7 +843,7 @@ function FooterSimple() {
     <footer className="container mx-auto px-4 py-12">
       <div className="flex flex-col items-center justify-between gap-6 border-t border-neutral-700 pt-8 text-center sm:flex-row sm:text-left">
         <div className="text-sm text-neutral-400">
-          © {new Date().getFullYear()} QuánAI — Tất Cả Quyền Được Bảo Lưu.
+          © {new Date().getFullYear()} <Image src="/logoQ.png" alt="Q+AI" width={60} height={60} className="inline-block ml-2" /> — Tất Cả Quyền Được Bảo Lưu.
         </div>
         <div className="flex items-center gap-6 text-sm">
           <Link href="/terms" className="text-neutral-400 hover:text-teal-400">Điều Khoản</Link>
