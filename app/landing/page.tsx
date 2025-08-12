@@ -811,10 +811,10 @@ function SocialProofSection() {
         <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> được tin dùng bởi nhiều mô hình F&B: từ quán nhỏ, cafe, trà sữa đến chuỗi lớn. Triển khai nhanh, chi phí tối ưu, ROI cao — đối tác lý tưởng cho tăng trưởng bền vững.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-8 opacity-80">
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
+          <Image src="/images/logo1.png" alt="Partner Logo" width={90} height={24} loading="lazy" />
+          <Image src="/images/logo2.png" alt="Partner Logo" width={90} height={24} loading="lazy" />
+          <Image src="/images/logo3.png" alt="Partner Logo" width={90} height={24} loading="lazy" />
+          <Image src="/images/logo4.png" alt="Partner Logo" width={90} height={24} loading="lazy" />
         </div>
       </div>
     </motion.section>
