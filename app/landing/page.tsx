@@ -863,7 +863,7 @@ function CTASection() {
       <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-teal-900/20 via-teal-800/10 to-neutral-900 p-10 shadow-xl">
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div>
-            <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">Sẵn sàng 'bay cao' với <Image src="/logoQ.png" alt="Q+AI" width={50} height={50} className="inline-block ml-2" loading="lazy" />!?</h3>
+            <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">Cùng'bay cao' với <Image src="/logoQ.png" alt="Q+AI" width={50} height={50} className="inline-block ml-2" loading="lazy" />!?</h3>
             <p className="mt-3 text-sm text-neutral-300">
               Thử miễn phí 14 ngày, không cam kết. Hỗ trợ setup nhanh 24h với chuyên gia, biến dữ liệu thành lợi nhuận ngay hôm nay.
             </p>
