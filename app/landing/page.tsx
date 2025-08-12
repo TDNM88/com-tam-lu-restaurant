@@ -23,6 +23,8 @@ export default function LandingPage() {
       <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <IntroSection />
       <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
+      <FeatureVideoSection />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <MainFeaturesSection />
       <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />  
       <DetailedGuideSection />
@@ -34,7 +36,6 @@ export default function LandingPage() {
       <DisplayControls showImages={showImages} setShowImages={setShowImages} />
       <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <GallerySection showImages={showImages} />
-      <FeatureVideoSection />
       <TestimonialsSection />
       <FAQSection />
       <SocialProofSection />
@@ -114,6 +115,26 @@ function IntroSection() {
         <p className="mt-4 text-lg text-neutral-300">
           <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> ra đời để thay đổi điều đó, và sẽ là <b>giải pháp toàn diện</b> giúp mọi loại hình kinh doanh F&B tạo ra <b>trải nghiệm khách hàng tuyệt vời</b> và chuyển hóa chúng thành <b>tăng trưởng bền vững</b>.
         </p>
+        <motion.section
+      id="video-gioi-thieu"
+      className="container mx-auto scroll-mt-24 px-4 py-16"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
+    >
+      <div className="relative mx-auto mt-10 aspect-video w-full max-w-4xl overflow-hidden rounded-2xl border border-neutral-700 shadow-xl">
+        <video
+          autoPlay
+          muted
+          loop
+          className="object-cover transition-transform duration-500 hover:scale-105"
+        >
+          <source src="video1.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </motion.section>
         <p className="mt-4 text-lg text-neutral-300">
           <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> khởi đầu Sứ mệnh của mình bằng một mã QR nhỏ, nhưng đủ sức định nghĩa lại cách tiếp cận và hành trình phục vụ khách hàng. Sẽ không còn cảnh họ phải xếp hàng dài chờ đến lượt được order tại quầy, hoặc đợi chán chê chưa thấy nhân viên tới phục vụ... để rồi những điều như vậy gây ra ảnh hưởng tiêu cực đến trải nghiệm sử dụng dịch vụ. 
         </p>
@@ -485,11 +506,19 @@ function FeatureVideoSection() {
       viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Demo Nhanh <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /></h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Sức mạnh từ <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /></h2>
         <p className="mt-4 text-lg text-neutral-300">Khám phá cách nền tảng AI biến vận hành quán ăn thành trải nghiệm thông minh, hiệu quả và tăng trưởng vượt bậc.</p>
       </div>
       <div className="relative mx-auto mt-10 aspect-video w-full max-w-4xl overflow-hidden rounded-2xl border border-neutral-700 shadow-xl">
-        <Image src="/images/IMG_20250810_021232.png" alt="Demo BếpAI" fill className="object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
+        <video
+          autoPlay
+          muted
+          loop
+          className="object-cover transition-transform duration-500 hover:scale-105"
+        >
+          <source src="video2.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
     </motion.section>
   )
@@ -834,7 +863,7 @@ function CTASection() {
       <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-teal-900/20 via-teal-800/10 to-neutral-900 p-10 shadow-xl">
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div>
-            <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">Sẵn Sàng Nâng Tầm Quán Ăn?</h3>
+            <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">Sẵn sàng 'bay cao' với <Image src="/logoQ.png" alt="Q+AI" width={50} height={50} className="inline-block ml-2" loading="lazy" />!?</h3>
             <p className="mt-3 text-sm text-neutral-300">
               Thử miễn phí 14 ngày, không cam kết. Hỗ trợ setup nhanh 24h với chuyên gia, biến dữ liệu thành lợi nhuận ngay hôm nay.
             </p>
@@ -848,7 +877,7 @@ function CTASection() {
             </div>
           </div>
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl">
-            <Image src="/images/IMG_20250810_021232.png" alt="Dashboard QuánAI" fill className="object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
+            <Image src="/images/logomock.png" alt="Dashboard QuánAI" fill className="object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
           </div>
         </div>
       </div>
