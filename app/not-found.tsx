@@ -12,8 +12,8 @@ export default function NotFound() {
     <main className="relative min-h-[70vh] bg-transparent text-white">
       {/* Nền theo phong cách landing */}
       <div className="fixed inset-0 -z-10">
-        <Image src="/images/holo.png" alt="Modern tech background" fill className="object-cover opacity-20 mix-blend-overlay" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-br from-teal-900/40 via-teal-800/50 to-neutral-900/70" />
+        <Image src="/images/hologram.png" alt="Nền công nghệ thông minh QuánAI" fill className="object-cover opacity-90" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 to-neutral-900/70" />
       </div>
       <div className="container mx-auto px-4 py-24">
         <motion.section
