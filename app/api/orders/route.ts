@@ -7,7 +7,8 @@ type OrderRow = {
   table_number: string | null
   status: "pending" | "preparing" | "ready" | "completed" | "cancelled"
   notes: string | null
-  order_time: string
+  order_time?: string
+  created_at?: string
   total_amount: number | null
   completed_at: string | null
 }
@@ -57,7 +58,7 @@ function toDto(order: OrderRow, items: (OrderItemRow & { menu?: MenuItemRow | nu
     tableNumber: String(order.table_number ?? ""),
     status: order.status,
     notes: order.notes,
-    orderTime: order.order_time,
+    orderTime: order.order_time ?? (order as any).created_at,
     completedAt: order.completed_at,
     totalAmount: Number(order.total_amount ?? 0),
     items: rawItems.map((i) => i.name),
@@ -72,15 +73,26 @@ export async function GET(req: Request) {
     const tableFilter = url.searchParams.get("table")?.trim()
 
     const supabase = getSupabaseServiceRoleClient()
-    const base = supabase.from("orders").select("*").order("order_time", { ascending: false })
-
-    // If not staff/admin, restrict to provided table (customer view)
-    let ordersRes
-    if (!(role === "admin" || role === "staff")) {
-      if (!tableFilter) return ok([]) // public homepage preview: empty list is fine
-      ordersRes = await base.eq("table_number", tableFilter)
-    } else {
-      ordersRes = await base
+    // Fallback: nếu thiếu cột order_time trên prod, thử lại với created_at
+    const queryWithOrder = (orderBy: "order_time" | "created_at") => {
+      const base = supabase.from("orders").select("*").order(orderBy, { ascending: false })
+      if (!(role === "admin" || role === "staff")) {
+        // Nếu không có tableFilter ở public view, trả về rỗng sớm
+        return base.eq("table_number", String(tableFilter))
+      }
+      return base
+    }
+    // Public view: nếu không có bảng chỉ định, trả về rỗng
+    if (!(role === "admin" || role === "staff") && !tableFilter) {
+      return ok([]) // public homepage preview: empty list is fine
+    }
+    let ordersRes = await queryWithOrder("order_time")
+    if (ordersRes.error) {
+      const msg = String(ordersRes.error.message || "").toLowerCase()
+      const missingOrderTime = msg.includes("order_time") && msg.includes("does not exist")
+      if (missingOrderTime) {
+        ordersRes = await queryWithOrder("created_at")
+      }
     }
 
     if (ordersRes.error) throw ordersRes.error
