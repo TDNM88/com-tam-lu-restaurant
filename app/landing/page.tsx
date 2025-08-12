@@ -3,10 +3,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import type { Dispatch, SetStateAction } from "react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { motion } from "framer-motion" // Giữ framer-motion để thêm hiệu ứng mượt mà
+import { motion } from "framer-motion"
 import { Separator } from "@radix-ui/react-separator"
 
 export default function LandingPage() {
@@ -15,10 +15,12 @@ export default function LandingPage() {
     <main className="relative min-h-dvh bg-gradient-to-b from-neutral-900/40 to-neutral-900/80 text-white scroll-smooth text-[15px] sm:text-base lg:text-[17px]">
       {/* Lớp nền tinh tế: giảm opacity để ảnh nền hiển thị rõ ràng hơn */}
       <div className="fixed inset-0 -z-10">
-        <Image src="/images/holo.png" alt="Modern tech background" fill className="object-cover opacity-20 mix-blend-overlay" />
+        <Image src="/images/holo.png" alt="Modern tech background" fill className="object-cover opacity-20 mix-blend-overlay" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-br from-teal-900/40 via-teal-800/50 to-neutral-900/70" />
       </div>
       <TableOfContents />
+      <HeroSection />
+      <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <IntroSection />
       <Separator className="mx-auto w-full border-t border-dashed border-teal-500/50" />
       <MainFeaturesSection />
@@ -43,6 +45,55 @@ export default function LandingPage() {
   )
 }
 
+function HeroSection() {
+  return (
+    <section className="relative min-h-[75vh] md:min-h-[80vh] overflow-hidden">
+      {/* Tối ưu nền: giảm opacity gradient để ảnh hiển thị rõ nét hơn */}
+      <motion.div
+        className="absolute inset-0 -z-10"
+        initial={{ scale: 1.1 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+      >
+        <Image src="/images/hologram.png" alt="Nền công nghệ thông minh QuánAI" fill className="object-cover opacity-90" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 to-neutral-900/70" />
+      </motion.div>
+      <div className="container relative z-10 mx-auto px-4 py-20 sm:py-24 md:py-28">
+        <motion.div
+          className="mx-auto max-w-3xl text-center text-white"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        >
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl"><Image src="/logoQ.png" alt="Q+AI" width={180} height={180} className="inline-block ml-2" loading="lazy" /></h1>
+          <motion.p
+            className="mt-6 text-lg text-neutral-200 sm:text-2xl"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            Giải pháp trí tuệ nhân tạo dành cho mọi loại hình kinh doanh F&B, từ quán nhỏ tới chuỗi lớn.
+          </motion.p>
+          <p className="mt-6 text-lg text-neutral-200 sm:text-xl">
+          Nhờ phương pháp huấn luyện đặc biệt kết hợp các đặc thù ngành F&B và văn hóa Việt Nam theo từng vùng miền, Giải pháp AI của chúng tôi sẽ tạo ra trải nghiệm khách hàng tuyệt vời và chuyển hóa chúng thành tăng trưởng bền vững cho thương hiệu của bạn!
+          </p>
+          <div className="mt-10 flex flex-wrap gap-4 justify-center">
+          <div className="flex items-center justify-center gap-4">
+            <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-500 transition-transform duration-300 hover:scale-105">
+              <Link href="#gioi-thieu">Câu Chuyện Của <Image src="/logoQ.png" alt="Q+AI" width={60} height={60} className="inline-block" loading="lazy" /></Link>
+            </Button>
+          </div>
+          <Button asChild size="lg" variant="outline" className="border-yellow-600 text-teal-400 hover:bg-teal-600 hover:text-white transition-transform duration-300 hover:scale-105">
+            <Link href="#tinh-nang">Khám Phá Tính Năng</Link>
+          </Button>
+        </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 function IntroSection() {
   return (
     <motion.section
@@ -50,33 +101,33 @@ function IntroSection() {
       className="container mx-auto scroll-mt-24 px-4 py-16 sm:py-20"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Chuyện của <Image src="/logoQ.png" alt="Q+AI" width={150} height={150} className="inline-block ml-2" /> 
+          Chuyện của <Image src="/logoQ.png" alt="Q+AI" width={150} height={150} className="inline-block ml-2" loading="lazy" /> 
         </h2>
         <p className="mt-4 text-lg text-neutral-300">
         Ở Việt Nam, cứ 10 quán F&B thì 9 quán đang phải vật lộn với các <b>vấn đề lặp đi lặp lại</b> làm ảnh hưởng đến doanh thu và lòng trung thành của khách hàng: <b> nhân sự thiếu ổn định</b>, <b>quy trình phục vụ rườm rà</b>, <b>đơn sai sót</b>, <b>khách phải chờ lâu</b>, <b>chi phí quản lý cao</b>.
         </p>
         <p className="mt-4 text-lg text-neutral-300">
-          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> ra đời để thay đổi điều đó, và sẽ là <b>giải pháp toàn diện</b> giúp mọi loại hình kinh doanh F&B tạo ra <b>trải nghiệm khách hàng tuyệt vời</b> và chuyển hóa chúng thành <b>tăng trưởng bền vững</b>.
+          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> ra đời để thay đổi điều đó, và sẽ là <b>giải pháp toàn diện</b> giúp mọi loại hình kinh doanh F&B tạo ra <b>trải nghiệm khách hàng tuyệt vời</b> và chuyển hóa chúng thành <b>tăng trưởng bền vững</b>.
         </p>
         <p className="mt-4 text-lg text-neutral-300">
-          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> khởi đầu Sứ mệnh của mình bằng một mã QR nhỏ, nhưng đủ sức định nghĩa lại cách tiếp cận và hành trình phục vụ khách hàng. Sẽ không còn cảnh họ phải xếp hàng dài chờ đến lượt được order tại quầy, hoặc đợi chán chê chưa thấy nhân viên tới phục vụ... để rồi những điều như vậy gây ra ảnh hưởng tiêu cực đến trải nghiệm sử dụng dịch vụ. 
+          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> khởi đầu Sứ mệnh của mình bằng một mã QR nhỏ, nhưng đủ sức định nghĩa lại cách tiếp cận và hành trình phục vụ khách hàng. Sẽ không còn cảnh họ phải xếp hàng dài chờ đến lượt được order tại quầy, hoặc đợi chán chê chưa thấy nhân viên tới phục vụ... để rồi những điều như vậy gây ra ảnh hưởng tiêu cực đến trải nghiệm sử dụng dịch vụ. 
         </p>
         <p className="mt-4 text-lg text-neutral-300">
-          Với <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" />, họ chỉ cần chọn một chỗ ưa thích, rồi thảnh thơi chọn món phù hợp trên chính chiếc điện thoại của mình. Và phần còn lại hãy để công nghệ của <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> làm nhiệm vụ và mang về kết quả tốt nhất cho tất cả chúng ta!
+          Với <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" />, họ chỉ cần chọn một chỗ ưa thích, rồi thảnh thơi chọn món phù hợp trên chính chiếc điện thoại của mình. Và phần còn lại hãy để công nghệ của <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> làm nhiệm vụ và mang về kết quả tốt nhất cho tất cả chúng ta!
         </p>
         <p className="mt-4 text-lg text-neutral-300"> 
-          Linh hồn của <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> là một Mô hình AI được huấn luyện chuyên sâu bởi các phương pháp đặc biệt, đảm bảo sẽ giúp hoạt động kinh doanh của bạn được <b>quản lý hiệu quả</b>, <b>vận hành dễ dàng</b>, <b>phục vụ nhanh chóng</b> – và mang lại <b>lợi nhuận cao hơn</b>.
+          Linh hồn của <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> là một Mô hình AI được huấn luyện chuyên sâu bởi các phương pháp đặc biệt, đảm bảo sẽ giúp hoạt động kinh doanh của bạn được <b>quản lý hiệu quả</b>, <b>vận hành dễ dàng</b>, <b>phục vụ nhanh chóng</b> – và mang lại <b>lợi nhuận cao hơn</b>.
         </p>
         <div className="mt-10 flex flex-wrap gap-4 justify-center">
-          <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-500">
+          <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-500 transition-transform duration-300 hover:scale-105">
             <Link href="/signup">Thử Miễn Phí Ngay</Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="border-yellow-600 text-teal-400 hover:bg-teal-600 hover:text-white">
+          <Button asChild size="lg" variant="outline" className="border-yellow-600 text-teal-400 hover:bg-teal-600 hover:text-white transition-transform duration-300 hover:scale-105">
             <Link href="#tinh-nang">Khám Phá Tính Năng</Link>
           </Button>
           <div className="mt-10 flex items-center justify-center gap-4 text-neutral-200">
@@ -92,13 +143,14 @@ function IntroSection() {
                   alt="Khách hàng hài lòng"
                   width={40}
                   height={40}
-                  className="h-10 w-10 rounded-full border-2 border-neutral-600 object-cover"
+                  className="h-10 w-10 rounded-full border-2 border-neutral-600 object-cover transition-transform duration-300 hover:scale-110"
+                  loading="lazy"
                 />
               ))}
             </div>
             <div className="flex -space-x-2">
             <p className="text-sm">
-              Hơn <b>1,500+</b> quán F&B tăng trưởng cùng <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" />
+              Hơn <b>1,500+</b> quán F&B tăng trưởng cùng <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" />
             </p>
             </div>
           </div>
@@ -147,12 +199,12 @@ function MainFeaturesSection() {
       className="container mx-auto scroll-mt-24 px-4 py-12 sm:py-16"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-3xl text-center">
         <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">Tính Năng Nổi Bật</h3>
-        <p className="mt-3 text-neutral-300"><Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> không chỉ là công cụ quản lý mà còn là đối tác tăng trưởng, với các tính năng được thiết kế để tối ưu trải nghiệm khách hàng và hiệu quả kinh doanh.</p>
+        <p className="mt-3 text-neutral-300"><Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> không chỉ là công cụ quản lý mà còn là đối tác tăng trưởng, với các tính năng được thiết kế để tối ưu trải nghiệm khách hàng và hiệu quả kinh doanh.</p>
       </div>
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((it, idx) => (
@@ -161,8 +213,9 @@ function MainFeaturesSection() {
             className="group rounded-2xl bg-neutral-800/50 p-6 shadow-lg transition-all hover:-translate-y-1 hover:bg-neutral-700/50 hover:shadow-xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.03 }}
           >
             <div className="text-3xl text-teal-400">{it.icon}</div>
             <h4 className="mt-3 text-lg font-semibold">{it.title}</h4>
@@ -189,7 +242,7 @@ function TableOfContents() {
       {/* Desktop TOC - Tối ưu giao diện với hover effect mượt hơn */}
       <nav
         aria-label="Mục lục"
-        className="sticky top-0 z-20 hidden border-b border-neutral-700 bg-neutral-900/90 backdrop-blur supports-[backdrop-filter]:bg-neutral-900/60 sm:block"
+        className="sticky top-0 z-20 hidden border-b border-neutral-700 bg-neutral-900/90 backdrop-blur supports-[backdrop-filter]:bg-neutral-900/60 md:block"
       >
         <div className="container mx-auto flex flex-wrap items-center gap-3 px-4 py-4">
           <span className="font-medium text-neutral-400">Khám Phá:</span>
@@ -197,7 +250,7 @@ function TableOfContents() {
             <a
               key={i.href}
               href={i.href}
-              className="rounded-full border border-neutral-600 px-4 py-2 text-sm text-neutral-300 transition hover:bg-teal-600 hover:text-white hover:shadow-md"
+              className="rounded-full border border-neutral-600 px-4 py-2 text-sm text-neutral-300 transition hover:bg-teal-600 hover:text-white hover:shadow-md hover:scale-105 duration-300"
             >
               {i.label}
             </a>
@@ -205,28 +258,33 @@ function TableOfContents() {
         </div>
       </nav>
       {/* Mobile TOC - Cải thiện UX với animation mở sheet */}
-      <div className="sticky top-0 z-20 border-b border-neutral-700 bg-neutral-900/90 px-4 py-3 sm:hidden">
+      <div className="sticky top-0 z-20 border-b border-neutral-700 bg-neutral-900/90 px-4 py-3 md:hidden">
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-sm font-medium text-neutral-400">Điều Hướng</div>
           <Sheet>
-            <SheetTrigger className="rounded-full border border-neutral-600 px-4 py-2 text-sm text-neutral-300 hover:bg-teal-600 hover:text-white">
+            <SheetTrigger className="rounded-full border border-neutral-600 px-4 py-2 text-sm text-neutral-300 hover:bg-teal-600 hover:text-white transition duration-300 hover:scale-105">
               Mục Lục
             </SheetTrigger>
             <SheetContent side="bottom" className="rounded-t-2xl bg-neutral-800 p-6">
               <SheetHeader>
                 <SheetTitle className="text-white">Khám Phá BếpAI</SheetTitle>
               </SheetHeader>
-              <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
+              <motion.div 
+                className="mt-6 grid grid-cols-2 gap-3 text-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
                 {items.map((i) => (
                   <a
                     key={i.href}
                     href={i.href}
-                    className="rounded-lg border border-neutral-600 px-4 py-3 text-neutral-300 hover:bg-teal-600 hover:text-white"
+                    className="rounded-lg border border-neutral-600 px-4 py-3 text-neutral-300 hover:bg-teal-600 hover:text-white transition duration-300 hover:scale-105"
                   >
                     {i.label}
                   </a>
                 ))}
-              </div>
+              </motion.div>
             </SheetContent>
           </Sheet>
         </div>
@@ -253,11 +311,11 @@ function DisplayControls({
           onClick={() => setShowImages(!showImages)}
           aria-pressed={showImages}
           aria-label="Ẩn/hiện hình ảnh"
-          className="border-neutral-600 text-neutral-300 hover:bg-teal-600 hover:text-white"
+          className="border-neutral-600 text-neutral-300 hover:bg-teal-600 hover:text-white transition duration-300 hover:scale-105"
         >
           {showImages ? "Ẩn Hình Ảnh" : "Hiện Hình Ảnh"}
         </Button>
-        <Button asChild variant="ghost" className="text-neutral-300 hover:bg-teal-600 hover:text-white">
+        <Button asChild variant="ghost" className="text-neutral-300 hover:bg-teal-600 hover:text-white transition duration-300 hover:scale-105">
           <a href="#huong-dan">Hướng Dẫn Chi Tiết</a>
         </Button>
       </div>
@@ -272,20 +330,21 @@ function DetailedGuideSection() {
       className="container mx-auto scroll-mt-24 px-4 py-16 sm:py-20"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">Hướng Dẫn Sử Dụng <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /></h2>
+        <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">Hướng Dẫn Sử Dụng <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /></h2>
         <p className="mt-4 text-center text-lg text-neutral-300">Các bước rõ ràng, dễ làm theo cho khách và nhân viên — khai thác tối đa sức mạnh AI tại bàn để phục vụ nhanh, chính xác, không chờ đợi.</p>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-2">
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
           <motion.div
             className="rounded-2xl bg-neutral-800/50 p-8 shadow-lg transition-all hover:shadow-xl"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.02 }}
           >
             <div className="text-lg font-semibold text-teal-400">Dành Cho Khách Hàng</div>
             <ol className="mt-6 space-y-6">
@@ -332,8 +391,9 @@ function DetailedGuideSection() {
             className="rounded-2xl bg-neutral-800/50 p-8 shadow-lg transition-all hover:shadow-xl"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.02 }}
           >
             <div className="text-lg font-semibold text-teal-400">Dành Cho Nhân Viên Quán</div>
             <ol className="mt-6 space-y-6">
@@ -377,13 +437,14 @@ function DetailedGuideSection() {
           </motion.div>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
           <motion.div
             className="rounded-2xl bg-neutral-800/50 p-8"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.02 }}
           >
             <h3 className="text-lg font-semibold text-white">Hỗ Trợ & Xử Lý Sự Cố (Khách Hàng)</h3>
             <ul className="mt-4 list-disc space-y-3 pl-5 text-sm text-neutral-300">
@@ -396,8 +457,9 @@ function DetailedGuideSection() {
             className="rounded-2xl bg-neutral-800/50 p-8"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.02 }}
           >
             <h3 className="text-lg font-semibold text-white">Hỗ Trợ & Xử Lý Sự Cố (Nhân Viên)</h3>
             <ul className="mt-4 list-disc space-y-3 pl-5 text-sm text-neutral-300">
@@ -419,76 +481,17 @@ function FeatureVideoSection() {
       className="container mx-auto scroll-mt-24 px-4 py-16"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Demo Nhanh <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /></h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Demo Nhanh <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /></h2>
         <p className="mt-4 text-lg text-neutral-300">Khám phá cách nền tảng AI biến vận hành quán ăn thành trải nghiệm thông minh, hiệu quả và tăng trưởng vượt bậc.</p>
       </div>
       <div className="relative mx-auto mt-10 aspect-video w-full max-w-4xl overflow-hidden rounded-2xl border border-neutral-700 shadow-xl">
-        <Image src="/images/IMG_20250810_021232.png" alt="Demo BếpAI" fill className="object-cover transition-transform duration-500 hover:scale-105" />
+        <Image src="/images/IMG_20250810_021232.png" alt="Demo BếpAI" fill className="object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
       </div>
     </motion.section>
-  )
-}
-
-function HeroSection() {
-  return (
-    <section className="relative min-h-[90vh] overflow-hidden">
-      {/* Tối ưu nền: giảm opacity gradient để ảnh hiển thị rõ nét hơn */}
-      <motion.div
-        className="absolute inset-0 -z-10"
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 1.5 }}
-      >
-        <Image src="/images/hologram.png" alt="Nền công nghệ thông minh QuánAI" fill className="object-cover opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 to-neutral-900/70" />
-      </motion.div>
-      <div className="container relative z-10 mx-auto px-4 py-32 sm:py-40">
-        <motion.div
-          className="mx-auto max-w-3xl text-center text-white"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">QUÁN AI</h1>
-          <p className="mt-6 text-lg text-neutral-200 sm:text-xl">
-          Giải pháp trí tuệ nhân tạo dành cho mọi loại hình kinh doanh F&B, từ quán nhỏ tới chuỗi lớn. Hãy để QuánAI giúp bạn tối ưu trải nghiệm khách hàng và tăng trưởng bền vững – nhờ sức mạnh của AI.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4 justify-center">
-            <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-500">
-              <Link href="/signup">Thử Miễn Phí Ngay</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-teal-600 text-teal-400 hover:bg-teal-600 hover:text-white">
-              <Link href="#tinh-nang">Khám Phá Tính Năng</Link>
-            </Button>
-          </div>
-          <div className="mt-10 flex items-center justify-center gap-4 text-neutral-200">
-            <div className="flex -space-x-2">
-              {[
-                "/placeholder-user.jpg",
-                "/images/holo.png",
-                "/images/holo1.png",
-              ].map((src, i) => (
-                <Image
-                  key={i}
-                  src={src}
-                  alt="Khách hàng hài lòng"
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-full border-2 border-neutral-600 object-cover"
-                />
-              ))}
-            </div>
-            <p className="text-sm">
-              Hơn <b>1,500+</b> quán F&B tăng trưởng cùng QuánAI
-            </p>
-          </div>
-        </motion.div>
-      </div>
-    </section>
   )
 }
 
@@ -531,27 +534,28 @@ function FeatureSection() {
       className="container mx-auto px-4 py-16 sm:py-20"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Tính Năng Đột Phá</h2>
         <p className="mt-4 text-lg text-neutral-300">
-          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> biến dữ liệu thành sức mạnh: AI tại bàn giúp vận hành mượt mà, tối ưu chi phí và thúc đẩy tăng trưởng doanh thu bền vững.
+          <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> biến dữ liệu thành sức mạnh: AI tại bàn giúp vận hành mượt mà, tối ưu chi phí và thúc đẩy tăng trưởng doanh thu bền vững.
         </p>
       </div>
-      <div className="mt-12 grid gap-8 lg:grid-cols-3">
+      <div className="mt-12 grid gap-8 md:grid-cols-3">
         {features.map((f, idx) => (
           <motion.div
             key={f.id}
             className="flex flex-col overflow-hidden rounded-2xl bg-neutral-800/50 shadow-lg transition-all hover:shadow-xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.03 }}
           >
             <div className="relative aspect-[16/9]">
-              <Image src={f.image} alt={f.title} fill className="object-cover transition-transform duration-500 hover:scale-105" />
+              <Image src={f.image} alt={f.title} fill className="object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
             </div>
             <div className="p-6">
               <h3 className="text-lg font-semibold text-white">{f.title}</h3>
@@ -586,25 +590,26 @@ function GallerySection({ showImages = true }: { showImages?: boolean }) {
       className="container mx-auto px-4 py-16 sm:py-20"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Thư Viện Hình Ảnh</h2>
         <p className="mt-4 text-lg text-neutral-300">Trải nghiệm giao diện hiện đại qua bộ sưu tập hình ảnh chất lượng cao, được thiết kế để truyền tải sức mạnh của BếpAI một cách trực quan nhất.</p>
       </div>
-      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {imgs.map((img, i) => (
           <motion.div
             key={i}
             className="group relative overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-800/50"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.03 }}
           >
             <div className="relative aspect-[4/3]">
-              <Image src={img.src} alt={img.alt} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+              <Image src={img.src} alt={img.alt} fill className="object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
             </div>
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-neutral-900/80 to-transparent p-4 text-sm text-white opacity-0 group-hover:opacity-100 transition-opacity">
               {img.alt}
@@ -622,12 +627,12 @@ function TestimonialsSection() {
       className="container mx-auto px-4 py-16 sm:py-20"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Khách Hàng Chia Sẻ</h2>
-        <p className="mt-4 text-lg text-neutral-300">Nghe từ những chủ quán đã biến <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> thành chìa khóa tăng trưởng kinh doanh thực tế.</p>
+        <p className="mt-4 text-lg text-neutral-300">Nghe từ những chủ quán đã biến <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> thành chìa khóa tăng trưởng kinh doanh thực tế.</p>
       </div>
       <TestimonialsCarousel />
     </motion.section>
@@ -660,14 +665,14 @@ function TestimonialsCarousel() {
         style={{ msOverflowStyle: "none" }}
       >
         {slides.map((s, i) => (
-          <div key={i} className="min-w-0 shrink-0 grow-0 basis-full snap-center px-6 sm:basis-1/2 lg:basis-1/3">
+          <div key={i} className="min-w-0 shrink-0 grow-0 basis-full snap-center px-6 sm:basis-1/2 md:basis-1/3">
             <motion.div
               className="h-full rounded-2xl bg-neutral-800/50 p-6 shadow-lg transition-all hover:shadow-xl"
               whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
             >
               <div className="flex items-center gap-3">
-                <Image src={s.avatar} alt={s.author} width={40} height={40} className="h-10 w-10 rounded-full object-cover" />
+                <Image src={s.avatar} alt={s.author} width={40} height={40} className="h-10 w-10 rounded-full object-cover" loading="lazy" />
                 <div className="text-sm font-semibold text-white">{s.author}</div>
               </div>
               <p className="mt-4 text-sm text-neutral-300">“{s.quote}”</p>
@@ -703,8 +708,8 @@ function FAQSection() {
       className="container mx-auto scroll-mt-24 px-4 py-16"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Câu Hỏi Thường Gặp</h2>
@@ -717,7 +722,7 @@ function FAQSection() {
             className="group rounded-2xl bg-neutral-800/50 p-6 shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
             viewport={{ once: true }}
           >
             <summary className="cursor-pointer list-none text-left text-sm font-semibold text-white">
@@ -765,22 +770,23 @@ function RoadmapSection() {
       className="container mx-auto scroll-mt-24 px-4 py-16 sm:py-20"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Lộ Trình Tương Lai</h2>
-        <p className="mt-4 text-lg text-neutral-300"><Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> liên tục tiến hóa với các tính năng AI đột phá, giúp quán ăn của bạn dẫn đầu xu hướng F&B thông minh.</p>
+        <p className="mt-4 text-lg text-neutral-300"><Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> liên tục tiến hóa với các tính năng AI đột phá, giúp quán ăn của bạn dẫn đầu xu hướng F&B thông minh.</p>
       </div>
-      <div className="mx-auto mt-10 grid max-w-5xl gap-6 sm:grid-cols-2">
+      <div className="mx-auto mt-10 grid max-w-5xl gap-6 sm:grid-cols-2 md:grid-cols-3">
         {roadmap.map((r, idx) => (
           <motion.div
             key={r.title}
             className="rounded-2xl bg-neutral-800/50 p-6 shadow-lg transition-all hover:shadow-xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
             viewport={{ once: true }}
+            whileHover={{ scale: 1.03 }}
           >
             <h3 className="text-lg font-semibold text-white">{r.title}</h3>
             <p className="mt-3 text-sm text-neutral-300">{r.desc}</p>
@@ -797,18 +803,18 @@ function SocialProofSection() {
       className="container mx-auto px-4 py-16"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="rounded-2xl bg-neutral-800/50 p-8 text-center shadow-lg">
         <p className="text-sm text-neutral-300">
-        <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" /> được tin dùng bởi nhiều mô hình F&B: từ quán nhỏ, cafe, trà sữa đến chuỗi lớn. Triển khai nhanh, chi phí tối ưu, ROI cao — đối tác lý tưởng cho tăng trưởng bền vững.
+        <Image src="/logoQ.png" alt="Q+AI" width={80} height={80} className="inline-block ml-2" loading="lazy" /> được tin dùng bởi nhiều mô hình F&B: từ quán nhỏ, cafe, trà sữa đến chuỗi lớn. Triển khai nhanh, chi phí tối ưu, ROI cao — đối tác lý tưởng cho tăng trưởng bền vững.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-8 opacity-80">
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} />
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} />
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} />
-          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} />
+          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
+          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
+          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
+          <Image src="/placeholder-logo.svg" alt="Partner Logo" width={90} height={24} loading="lazy" />
         </div>
       </div>
     </motion.section>
@@ -822,27 +828,27 @@ function CTASection() {
       className="relative mx-auto my-16 w-full max-w-5xl scroll-mt-24 px-4"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-teal-900/20 via-teal-800/10 to-neutral-900 p-10 shadow-xl">
-        <div className="grid items-center gap-10 sm:grid-cols-2">
+        <div className="grid items-center gap-10 md:grid-cols-2">
           <div>
             <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">Sẵn Sàng Nâng Tầm Quán Ăn?</h3>
             <p className="mt-3 text-sm text-neutral-300">
               Thử miễn phí 14 ngày, không cam kết. Hỗ trợ setup nhanh 24h với chuyên gia, biến dữ liệu thành lợi nhuận ngay hôm nay.
             </p>
             <div className="mt-6 flex flex-wrap gap-4">
-              <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-500">
+              <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-500 transition-transform duration-300 hover:scale-105">
                 <Link href="/signup">Thử Miễn Phí</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-teal-600 text-teal-400 hover:bg-teal-600 hover:text-white">
+              <Button asChild size="lg" variant="outline" className="border-teal-600 text-teal-400 hover:bg-teal-600 hover:text-white transition-transform duration-300 hover:scale-105">
                 <Link href="/contact">Đặt Demo</Link>
               </Button>
             </div>
           </div>
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl">
-            <Image src="/images/IMG_20250810_021232.png" alt="Dashboard QuánAI" fill className="object-cover transition-transform duration-500 hover:scale-105" />
+            <Image src="/images/IMG_20250810_021232.png" alt="Dashboard QuánAI" fill className="object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
           </div>
         </div>
       </div>
@@ -853,14 +859,14 @@ function CTASection() {
 function FooterSimple() {
   return (
     <footer className="container mx-auto px-4 py-12">
-      <div className="flex flex-col items-center justify-between gap-6 border-t border-neutral-700 pt-8 text-center sm:flex-row sm:text-left">
+      <div className="flex flex-col items-center justify-between gap-6 border-t border-neutral-700 pt-8 text-center md:flex-row md:text-left">
         <div className="text-sm text-neutral-400">
-          © {new Date().getFullYear()} <Image src="/logoQ.png" alt="Q+AI" width={60} height={60} className="inline-block ml-2" /> — Tất Cả Quyền Được Bảo Lưu.
+          © {new Date().getFullYear()} <Image src="/logoQ.png" alt="Q+AI" width={60} height={60} className="inline-block ml-2" loading="lazy" /> — Tất Cả Quyền Được Bảo Lưu.
         </div>
         <div className="flex items-center gap-6 text-sm">
-          <Link href="/terms" className="text-neutral-400 hover:text-teal-400">Điều Khoản</Link>
-          <Link href="/privacy" className="text-neutral-400 hover:text-teal-400">Bảo Mật</Link>
-          <Link href="/contact" className="text-neutral-400 hover:text-teal-400">Liên Hệ</Link>
+          <Link href="/terms" className="text-neutral-400 hover:text-teal-400 transition duration-300 hover:scale-105">Điều Khoản</Link>
+          <Link href="/privacy" className="text-neutral-400 hover:text-teal-400 transition duration-300 hover:scale-105">Bảo Mật</Link>
+          <Link href="/contact" className="text-neutral-400 hover:text-teal-400 transition duration-300 hover:scale-105">Liên Hệ</Link>
         </div>
       </div>
     </footer>
@@ -870,10 +876,10 @@ function FooterSimple() {
 function HelpFab() {
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
-      <Button asChild size="lg" className="bg-teal-600 shadow-lg hover:bg-teal-500" aria-label="Cần hỗ trợ?">
+      <Button asChild size="lg" className="bg-teal-600 shadow-lg hover:bg-teal-500 transition-transform duration-300 hover:scale-105" aria-label="Cần hỗ trợ?">
         <a href="#faq">Cần Hỗ Trợ?</a>
       </Button>
-      <Button asChild variant="outline" size="sm" className="border-teal-600 text-teal-400 shadow hover:bg-teal-600 hover:text-white" aria-label="Liên hệ nhanh">
+      <Button asChild variant="outline" size="sm" className="border-teal-600 text-teal-400 shadow hover:bg-teal-600 hover:text-white transition-transform duration-300 hover:scale-105" aria-label="Liên hệ nhanh">
         <Link href="/contact">Chat Ngay</Link>
       </Button>
     </div>
