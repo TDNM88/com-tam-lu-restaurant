@@ -1,17 +1,16 @@
-import { createClient } from "@supabase/supabase-js"
+import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-export const supabaseServer = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-})
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error(
+    "Missing Supabase environment variables: SUPABASE_URL/NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY"
+  )
+}
 
 export function createServerClient() {
-  return createClient(supabaseUrl, supabaseServiceKey, {
+  return createSupabaseClient(supabaseUrl as string, supabaseServiceKey as string, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
@@ -23,3 +22,8 @@ export function createServerClient() {
 export function getSupabaseServiceRoleClient() {
   return createServerClient()
 }
+
+// Alias tương thích ngược: một số nơi import { createClient } từ file này
+export const createClient = getSupabaseServiceRoleClient
+
+export default getSupabaseServiceRoleClient

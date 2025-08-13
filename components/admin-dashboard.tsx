@@ -36,16 +36,11 @@ export function AdminDashboard() {
     try {
       const response = await fetch(`/api/orders/${orderId}/status`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to update order status")
-      }
-
+      if (!response.ok) throw new Error("Failed to update order status")
       refetch()
     } catch (error) {
       console.error("Error updating order status:", error)
@@ -60,10 +55,8 @@ export function AdminDashboard() {
       completed: { label: "Hoàn thành", variant: "secondary" as const, icon: CheckCircle },
       cancelled: { label: "Đã hủy", variant: "destructive" as const, icon: AlertCircle },
     }
-
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
     const Icon = config.icon
-
     return (
       <Badge variant={config.variant} className="flex items-center gap-1">
         <Icon className="h-3 w-3" />
@@ -73,20 +66,12 @@ export function AdminDashboard() {
   }
 
   const getNextStatus = (currentStatus: string) => {
-    const statusFlow = {
-      pending: "preparing",
-      preparing: "ready",
-      ready: "completed",
-    }
+    const statusFlow = { pending: "preparing", preparing: "ready", ready: "completed" }
     return statusFlow[currentStatus as keyof typeof statusFlow]
   }
 
   const getNextStatusLabel = (currentStatus: string) => {
-    const labels = {
-      pending: "Bắt đầu chế biến",
-      preparing: "Đánh dấu sẵn sàng",
-      ready: "Hoàn thành đơn hàng",
-    }
+    const labels = { pending: "Bắt đầu chế biến", preparing: "Đánh dấu sẵn sàng", ready: "Hoàn thành đơn hàng" }
     return labels[currentStatus as keyof typeof labels]
   }
 
@@ -183,9 +168,7 @@ export function AdminDashboard() {
                             <div className="flex justify-between items-start mb-2">
                               <div>
                                 <p className="font-semibold">Bàn {order.table_number}</p>
-                                <p className="text-sm text-gray-600">
-                                  {new Date(order.created_at).toLocaleTimeString("vi-VN")}
-                                </p>
+                                <p className="text-sm text-gray-600">{new Date(order.created_at).toLocaleTimeString("vi-VN")}</p>
                               </div>
                               {getStatusBadge(order.status)}
                             </div>
@@ -203,10 +186,7 @@ export function AdminDashboard() {
 
                             <div className="flex justify-between items-center">
                               <span className="font-bold">Tổng: {order.total_amount?.toLocaleString()}đ</span>
-                              <Button
-                                size="sm"
-                                onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}
-                              >
+                              <Button size="sm" onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}>
                                 {getNextStatusLabel(order.status)}
                               </Button>
                             </div>
@@ -235,9 +215,7 @@ export function AdminDashboard() {
                             <div className="flex justify-between items-start mb-2">
                               <div>
                                 <p className="font-semibold">Bàn {order.table_number}</p>
-                                <p className="text-sm text-gray-600">
-                                  {new Date(order.created_at).toLocaleTimeString("vi-VN")}
-                                </p>
+                                <p className="text-sm text-gray-600">{new Date(order.created_at).toLocaleTimeString("vi-VN")}</p>
                               </div>
                               {getStatusBadge(order.status)}
                             </div>
@@ -255,10 +233,7 @@ export function AdminDashboard() {
 
                             <div className="flex justify-between items-center">
                               <span className="font-bold">Tổng: {order.total_amount?.toLocaleString()}đ</span>
-                              <Button
-                                size="sm"
-                                onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}
-                              >
+                              <Button size="sm" onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}>
                                 {getNextStatusLabel(order.status)}
                               </Button>
                             </div>
@@ -287,9 +262,7 @@ export function AdminDashboard() {
                             <div className="flex justify-between items-start mb-2">
                               <div>
                                 <p className="font-semibold">Bàn {order.table_number}</p>
-                                <p className="text-sm text-gray-600">
-                                  {new Date(order.created_at).toLocaleTimeString("vi-VN")}
-                                </p>
+                                <p className="text-sm text-gray-600">{new Date(order.created_at).toLocaleTimeString("vi-VN")}</p>
                               </div>
                               {getStatusBadge(order.status)}
                             </div>
@@ -307,10 +280,7 @@ export function AdminDashboard() {
 
                             <div className="flex justify-between items-center">
                               <span className="font-bold">Tổng: {order.total_amount?.toLocaleString()}đ</span>
-                              <Button
-                                size="sm"
-                                onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}
-                              >
+                              <Button size="sm" onClick={() => updateOrderStatus(order.id, getNextStatus(order.status))}>
                                 {getNextStatusLabel(order.status)}
                               </Button>
                             </div>

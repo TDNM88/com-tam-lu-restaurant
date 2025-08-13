@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import type { MenuItem } from "@/lib/types"
 
 export function useMenuItems() {
@@ -8,14 +8,7 @@ export function useMenuItems() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const init = async () => {
-      await fetchMenuItems()
-    }
-    init()
-  }, [])
-
-  const fetchMenuItems = async () => {
+  const fetchMenuItems = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -35,7 +28,11 @@ export function useMenuItems() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchMenuItems()
+  }, [fetchMenuItems])
 
   const refetch = async () => {
     await fetchMenuItems()

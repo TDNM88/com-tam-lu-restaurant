@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
     // Transform the data to include rawItems for compatibility
     const transformedOrders =
-      orders?.map((order) => ({
+      orders?.map((order: any) => ({
         ...order,
         rawItems:
           order.order_items?.map((item: any) => ({
