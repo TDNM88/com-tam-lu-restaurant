@@ -1,129 +1,149 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 
-export type OrderStatus = "pending" | "preparing" | "ready" | "completed" | "cancelled"
-
-export type OrderItemPayload = {
-  menuItemId: string | null
-  name: string
-  quantity: number
-  unitPrice: number
-  subtotal: number
-  note?: string | null
-  imageUrl?: string | null
-}
-
-export type OrderDTO = {
+export interface Order {
   id: string
   tableNumber: string
-  items: string[]
-  rawItems: OrderItemPayload[]
-  totalAmount: number
-  status: OrderStatus
-  notes?: string | null
+  status: "pending" | "preparing" | "ready" | "completed" | "cancelled"
+  notes: string | null
   orderTime: string
-  completedAt?: string | null
+  completedAt: string | null
+  totalAmount: number
+  items: string[]
+  rawItems: Array<{
+    menuItemId: string | null
+    name: string
+    quantity: number
+    unitPrice: number
+    subtotal: number
+    note: string | null
+    imageUrl: string | null
+  }>
 }
 
-type ApiResponse<T> = { success: boolean; data?: T; error?: string; message?: string }
-
-async function parseJsonSafe<T>(res: Response): Promise<ApiResponse<T>> {
-  const ct = res.headers.get("content-type") || ""
-  if (ct.includes("application/json")) {
-    return (await res.json()) as ApiResponse<T>
-  }
-  const text = await res.text()
-  throw new Error(text || `HTTP ${res.status} ${res.statusText}`)
-}
-
-export function useOrders(options?: { tableNumber?: string; role?: "admin" | "staff" | "customer" }) {
-  const { tableNumber, role } = options || {}
-  const [orders, setOrders] = useState<OrderDTO[]>([])
-  const [loading, setLoading] = useState(false)
+export function useOrders(tableNumber?: string) {
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const headers: HeadersInit = {}
-  if (role) headers["authorization"] = `Role ${role}`
-
-  const fetchOrders = useCallback(async () => {
-    setLoading(true)
-    setError(null)
+  const fetchOrders = async () => {
     try {
-      let url = "/api/orders"
-      if (tableNumber) url += `?table=${encodeURIComponent(tableNumber)}`
-      const res = await fetch(url, { headers, cache: "no-store" })
-      if (!res.ok) {
-        // Try to parse error JSON, else read text
-        try {
-          const json = await res.json()
-          throw new Error(json?.error || `HTTP ${res.status}`)
-        } catch {
-          const text = await res.text()
-          throw new Error(text || `HTTP ${res.status}`)
-        }
+      setLoading(true)
+      setError(null)
+
+      const url = new URL("/api/orders", window.location.origin)
+      if (tableNumber) {
+        url.searchParams.set("table", tableNumber)
       }
-      const json = await parseJsonSafe<OrderDTO[]>(res)
-      if (!json.success) throw new Error(json.error || "Failed to load orders")
-      setOrders(json.data || [])
-    } catch (e: any) {
-      console.error("useOrders fetch error:", e)
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+
+      if (result.success) {
+        setOrders(result.data || [])
+      } else {
+        throw new Error(result.error || "Failed to fetch orders")
+      }
+    } catch (err: any) {
+      console.error("useOrders fetch error:", err)
+      setError(err.message || "Failed to fetch orders")
       setOrders([])
-      setError(e?.message || "Không thể tải đơn hàng")
     } finally {
       setLoading(false)
     }
-  }, [tableNumber, role])
+  }
+
+  const createOrder = async (orderData: {
+    tableNumber: string
+    items: Array<{
+      menuItemId: string
+      name: string
+      quantity: number
+      unitPrice: number
+      subtotal?: number
+      note?: string
+    }>
+    totalAmount: number
+    notes?: string
+  }) => {
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Refresh orders after creating
+        await fetchOrders()
+        return result.data
+      } else {
+        throw new Error(result.error || "Failed to create order")
+      }
+    } catch (err: any) {
+      console.error("Create order error:", err)
+      throw err
+    }
+  }
+
+  const updateOrderStatus = async (orderId: string, status: Order["status"]) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Refresh orders after updating
+        await fetchOrders()
+        return result.data
+      } else {
+        throw new Error(result.error || "Failed to update order status")
+      }
+    } catch (err: any) {
+      console.error("Update order status error:", err)
+      throw err
+    }
+  }
 
   useEffect(() => {
     fetchOrders()
-  }, [fetchOrders])
+  }, [tableNumber])
 
-  const createOrder = useCallback(
-    async (payload: {
-      tableNumber: string
-      items: {
-        menuItemId: string
-        name?: string
-        quantity: number
-        unitPrice: number
-        subtotal?: number
-        note?: string
-      }[]
-      totalAmount: number
-      notes?: string
-    }) => {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...headers },
-        body: JSON.stringify(payload),
-      })
-      const json = await parseJsonSafe<OrderDTO>(res)
-      if (!res.ok || !json.success || !json.data) {
-        throw new Error(json.error || "Không thể tạo đơn hàng")
-      }
-      setOrders((prev) => [json.data!, ...prev])
-      return json.data!
-    },
-    [role],
-  )
-
-  const updateOrderStatus = useCallback(
-    async (id: string, status: OrderStatus) => {
-      const res = await fetch(`/api/orders/${id}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", ...headers },
-        body: JSON.stringify({ status }),
-      })
-      const json = await parseJsonSafe<OrderDTO>(res)
-      if (!res.ok || !json.success) {
-        throw new Error(json.error || "Không thể cập nhật trạng thái")
-      }
-      setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)))
-      return true
-    },
-    [role],
-  )
-
-  return { orders, loading, error, refetch: fetchOrders, createOrder, updateOrderStatus }
+  return {
+    orders,
+    loading,
+    error,
+    refetch: fetchOrders,
+    createOrder,
+    updateOrderStatus,
+  }
 }

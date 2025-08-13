@@ -1,5 +1,3 @@
-
-
 [![Triển khai trên Vercel](https://img.shields.io/badge/Triển%20khai%20trên-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/tdnm/v0-com-tam-lu-app)
 [![Xây dựng với v0](https://img.shields.io/badge/Xây%20dựng%20với-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/TdZtNqFS6Ru)
 
@@ -45,7 +43,7 @@
 
 Tạo file `.env.local` ở thư mục gốc và điền các biến sau:
 
-```env
+\`\`\`env
 # Postgres
 POSTGRES_URL=
 POSTGRES_PRISMA_URL=
@@ -67,7 +65,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 # Khác
 BLOB_READ_WRITE_TOKEN=
-```
+\`\`\`
 
 Lưu ý: không commit `.env.local` lên repository công khai.
 
