@@ -1,7 +1,6 @@
-"use client"
+import { getSupabaseBrowserClient } from "./supabase-browser"
 
-import { getSupabaseBrowserClient } from "@/lib/supabase-browser"
-
-// Dùng cùng một singleton client trên browser để tránh cảnh báo
-// "Multiple GoTrueClient instances detected" do trùng storage key.
-export const supabaseClient = getSupabaseBrowserClient()
+export const supabase = getSupabaseBrowserClient()
+// Tương thích ngược với các import cũ
+export const supabaseClient = supabase
+export { getSupabaseBrowserClient }

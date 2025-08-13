@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   keywords: "hệ thống gọi món, QR code",
   authors: [{ name: "Q+AI" }],
   robots: "index, follow",
+    generator: 'v0.app'
 }
 
 export const viewport: Viewport = {

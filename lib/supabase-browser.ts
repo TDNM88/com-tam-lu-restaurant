@@ -1,18 +1,15 @@
-"use client"
+import { createClient } from "@supabase/supabase-js"
 
-import { createClient, type SupabaseClient } from "@supabase/supabase-js"
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-let browserClient: SupabaseClient | null = null
+let supabaseBrowserClient: ReturnType<typeof createClient> | null = null
 
 export function getSupabaseBrowserClient() {
-  if (browserClient) return browserClient
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY")
+  if (!supabaseBrowserClient) {
+    supabaseBrowserClient = createClient(supabaseUrl, supabaseAnonKey)
   }
-  browserClient = createClient(url, key, {
-    auth: { persistSession: true, autoRefreshToken: true },
-  })
-  return browserClient
+  return supabaseBrowserClient
 }
+
+export const supabase = getSupabaseBrowserClient()

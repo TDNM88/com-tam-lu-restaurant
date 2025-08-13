@@ -1,84 +1,83 @@
-import { NextResponse } from "next/server"
-import { getSupabaseServiceRoleClient } from "@/lib/supabase-server"
-import { auth, isStaffOrAdmin } from "@/lib/auth"
+import { type NextRequest, NextResponse } from "next/server"
+import { createServerClient } from "@/lib/supabase-server"
 
-function mapRow(row: any) {
-  return {
-    id: row.id,
-    name: row.name,
-    description: row.description ?? "",
-    price: typeof row.price === "number" ? row.price : Number(row.price ?? 0),
-    available: row.available ?? true,
-    category: row.category ?? null,
-    sortOrder: row.sort_order ?? 0,
-    imageUrl: row.image_url ?? row.image ?? null,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-  }
-}
-
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const supabase = getSupabaseServiceRoleClient()
-    const url = new URL(req.url)
-    const q = url.searchParams.get("q")?.trim()
-    let query = supabase
+    const supabase = createServerClient()
+
+    const { data: menuItems, error } = await supabase
       .from("menu_items")
       .select("*")
+      .eq("is_available", true)
+      .order("category", { ascending: true })
       .order("name", { ascending: true })
 
-    if (q) {
-      // Basic search by name or category
-      query = query.ilike("name", `%${q}%`)
-    }
-
-    const { data, error } = await query
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error("Database error:", error)
+      return NextResponse.json({ success: false, error: error.message }, { status: 500 })
     }
 
-    const items = (data || []).map(mapRow)
-    return NextResponse.json({ items })
-  } catch (err: any) {
-    return NextResponse.json({ error: err?.message || "Internal error" }, { status: 500 })
+    // Transform the data to match the expected format
+    const transformedItems =
+      menuItems?.map((item) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description || "",
+        price: item.price,
+        category: item.category,
+        image: item.image_url,
+        isAvailable: item.is_available,
+        isPopular: item.is_popular || false,
+        isFree: item.price === 0,
+        prepTime: item.prep_time || "10-15 phút",
+        rating: item.rating || 4.5,
+      })) || []
+
+    return NextResponse.json({
+      success: true,
+      data: transformedItems,
+    })
+  } catch (error: any) {
+    console.error("API error:", error)
+    return NextResponse.json({ success: false, error: error.message || "Internal server error" }, { status: 500 })
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { role } = await auth(req)
-    if (!isStaffOrAdmin(role)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    const supabase = createServerClient()
+    const body = await request.json()
+
+    const { name, description, price, category, imageUrl, isAvailable = true } = body
+
+    if (!name || !price || !category) {
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 })
     }
 
-    const body = await req.json()
-    const payload = {
-      name: String(body.name ?? "").trim(),
-      description: body.description ?? null,
-      price: Number(body.price ?? 0),
-      available: body.available ?? true,
-      category: body.category ?? null,
-      sort_order: Number(body.sortOrder ?? 0),
-      // Write to both columns so either schema works
-      image_url: body.imageUrl ?? body.image ?? null,
-      image: body.image ?? body.imageUrl ?? null,
-    }
-
-    if (!payload.name) {
-      return NextResponse.json({ error: "name is required" }, { status: 400 })
-    }
-
-    const supabase = getSupabaseServiceRoleClient()
-    const { data, error } = await supabase
+    const { data: menuItem, error } = await supabase
       .from("menu_items")
-      .upsert(payload, { onConflict: "name", ignoreDuplicates: false })
-      .select("*")
+      .insert({
+        name,
+        description: description || "",
+        price,
+        category,
+        image_url: imageUrl,
+        is_available: isAvailable,
+      })
+      .select()
+      .single()
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error("Database error:", error)
+      return NextResponse.json({ success: false, error: error.message }, { status: 500 })
     }
-    return NextResponse.json({ items: (data || []).map(mapRow) }, { status: 201 })
-  } catch (err: any) {
-    return NextResponse.json({ error: err?.message || "Internal error" }, { status: 500 })
+
+    return NextResponse.json({
+      success: true,
+      data: menuItem,
+    })
+  } catch (error: any) {
+    console.error("API error:", error)
+    return NextResponse.json({ success: false, error: error.message || "Internal server error" }, { status: 500 })
   }
 }

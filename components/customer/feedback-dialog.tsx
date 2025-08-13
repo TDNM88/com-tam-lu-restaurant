@@ -15,32 +15,35 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
-export function FeedbackDialog({
-  orderId,
-  onSubmit,
-  trigger,
-}: {
-  orderId: string
-  onSubmit: (data: { rating: number; comment?: string }) => void
+interface FeedbackDialogProps {
+  orderId?: string
+  onSubmit?: (data: { rating: number; comment?: string }) => void
   trigger?: React.ReactNode
-}) {
+  children?: React.ReactNode
+}
+
+export function FeedbackDialog({ orderId, onSubmit, trigger, children }: FeedbackDialogProps) {
   const [open, setOpen] = useState(false)
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState("")
 
   const handleSubmit = () => {
-    onSubmit({ rating, comment: comment.trim() || undefined })
+    onSubmit?.({ rating, comment: comment.trim() || undefined })
     setOpen(false)
     setComment("")
     setRating(5)
   }
 
+  const triggerNode = trigger ?? children
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
+      {triggerNode ? <DialogTrigger asChild>{triggerNode}</DialogTrigger> : null}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Đánh giá đơn hàng #{orderId.slice(-4)}</DialogTitle>
+          <DialogTitle>
+            {orderId ? `Đánh giá đơn hàng #${orderId.slice(-4)}` : "Góp ý & Đánh giá"}
+          </DialogTitle>
           <DialogDescription>Góp ý giúp chúng tôi phục vụ tốt hơn.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">

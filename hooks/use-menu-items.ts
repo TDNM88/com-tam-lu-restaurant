@@ -1,201 +1,106 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import type { MenuItem, ApiResponse } from "@/lib/types"
-import { supabaseClient } from "@/lib/supabase-client"
-
-// Detect production without referencing process.env in client
-const isProduction = typeof window !== "undefined"
-  ? !/^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname)
-  : true
+import type { MenuItem } from "@/lib/types"
 
 export function useMenuItems() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Backend item shape from current API routes
-  type BackendItem = {
-    id: string
-    name: string
-    description?: string | null
-    price: number
-    available?: boolean | null
-    category?: string | null
-    sortOrder?: number | null
-    imageUrl?: string | null
-    image?: string | null
-    createdAt?: string
-    updatedAt?: string
-  }
-
-  const toFrontItem = (b: BackendItem): MenuItem => ({
-    id: b.id,
-    name: b.name,
-    shortName: "",
-    description: b.description ?? "",
-    price: b.price ?? 0,
-    image: b.imageUrl ?? b.image ?? "",
-    category: b.category ?? "signature",
-    rating: 4.5,
-    prepTime: "",
-    isPopular: false,
-    isFree: false,
-    isAvailable: b.available ?? true,
-    createdAt: b.createdAt ?? "",
-    updatedAt: b.updatedAt ?? "",
-  })
-
-  const toBackendPayload = (item: Partial<MenuItem>) => ({
-    ...(item.name !== undefined && { name: item.name }),
-    ...(item.description !== undefined && { description: item.description }),
-    ...(item.price !== undefined && { price: Number(item.price) }),
-    ...(item.isAvailable !== undefined && { available: Boolean(item.isAvailable) }),
-    ...(item.category !== undefined && { category: item.category }),
-    ...(item.image !== undefined && { imageUrl: item.image }),
-  })
-
-  const buildAuthHeaders = async () => {
-    const base: Record<string, string> = { "Content-Type": "application/json" }
-    try {
-      const { data } = await supabaseClient.auth.getSession()
-      const token = data?.session?.access_token
-      if (token) {
-        // Try to decode role from JWT to decide whether to use dev fallback
-        let role: string | undefined
-        try {
-          const payload = JSON.parse(atob(token.split(".")[1] || ""))
-          role = payload?.app_metadata?.role || payload?.user_metadata?.role
-        } catch {
-          // ignore decode errors
-        }
-
-        const privileged = role === "admin" || role === "staff" || role === "owner"
-        if (privileged) {
-          base["Authorization"] = `Bearer ${token}`
-          return { headers: base, devFallback: false }
-        }
-        // Token có nhưng role không đủ quyền → trong dev dùng fallback, tránh gửi Authorization
-        if (!isProduction) {
-          base["X-Role"] = "admin"
-          return { headers: base, devFallback: true }
-        }
-        // production: gửi token (sẽ bị 403 nếu không đủ quyền, đúng mong đợi)
-        base["Authorization"] = `Bearer ${token}`
-        return { headers: base, devFallback: false }
-      }
-    } catch {
-      // ignore
+  useEffect(() => {
+    const init = async () => {
+      await fetchMenuItems()
     }
-    // Không có token: dev fallback
-    if (!isProduction) {
-      base["X-Role"] = "admin"
-      return { headers: base, devFallback: true }
-    }
-    return { headers: base, devFallback: false }
-  }
+    init()
+  }, [])
 
   const fetchMenuItems = async () => {
     try {
       setLoading(true)
+      setError(null)
+
       const response = await fetch("/api/menu-items")
-      const raw = await response.json()
-      // Support both shapes: { success, data } or { items }
-      const list: BackendItem[] = raw?.data ?? raw?.items ?? []
-      if (!Array.isArray(list)) {
-        setError(raw?.error || "Failed to fetch menu items")
-      } else {
-        setMenuItems(list.map(toFrontItem))
-        setError(null)
+      const result = await response.json()
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to fetch menu items")
       }
-    } catch (err) {
-      setError("Network error")
+
+      setMenuItems(result.data || [])
+    } catch (err: any) {
       console.error("Error fetching menu items:", err)
+      setError(err.message)
+      setMenuItems([])
     } finally {
       setLoading(false)
     }
   }
 
-  const createMenuItem = async (item: Omit<MenuItem, "id" | "createdAt" | "updatedAt">) => {
-    try {
-      const { headers, devFallback } = await buildAuthHeaders()
-      const url = devFallback ? "/api/menu-items?role=admin" : "/api/menu-items"
-      const response = await fetch(url, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(toBackendPayload(item)),
-      })
+  const refetch = async () => {
+    await fetchMenuItems()
+  }
 
-      const raw = await response.json()
-      const created: BackendItem[] = raw?.data ?? raw?.items ?? []
-      if (Array.isArray(created) && created.length > 0) {
-        const newItem = toFrontItem(created[0])
-        setMenuItems((prev) => [...prev, newItem])
-        return newItem
-      }
-      throw new Error(raw?.error || "Failed to create menu item")
-    } catch (err) {
-      console.error("Error creating menu item:", err)
-      throw err
+  const createMenuItem = async (data: Partial<MenuItem> & { name: string; price: number; category: string }) => {
+    const payload = {
+      name: data.name,
+      description: data.description ?? "",
+      price: Number(data.price ?? 0),
+      category: data.category,
+      imageUrl: data.image ?? "",
+      isAvailable: data.isAvailable ?? true,
     }
+    const res = await fetch("/api/menu-items", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+    const json = await res.json()
+    if (!res.ok || !json.success) {
+      throw new Error(json.error || "Không thể tạo món ăn")
+    }
+    await refetch()
   }
 
   const updateMenuItem = async (id: string, updates: Partial<MenuItem>) => {
-    try {
-      const { headers, devFallback } = await buildAuthHeaders()
-      const url = devFallback ? `/api/menu-items/${id}?role=admin` : `/api/menu-items/${id}`
-      const response = await fetch(url, {
-        method: "PATCH",
-        headers: headers,
-        body: JSON.stringify(toBackendPayload(updates)),
-      })
-
-      const raw = await response.json()
-      const updated: BackendItem = raw?.data ?? raw?.item
-      if (updated && updated.id) {
-        const newItem = toFrontItem(updated)
-        setMenuItems((prev) => prev.map((it) => (it.id === id ? newItem : it)))
-        return newItem
-      }
-      throw new Error(raw?.error || "Failed to update menu item")
-    } catch (err) {
-      console.error("Error updating menu item:", err)
-      throw err
+    // Map một số trường theo API PATCH
+    const payload: any = {
+      ...(updates.name !== undefined && { name: updates.name }),
+      ...(updates.description !== undefined && { description: updates.description }),
+      ...(updates.price !== undefined && { price: Number(updates.price) }),
+      ...(updates.category !== undefined && { category: updates.category }),
+      ...(updates.image !== undefined && { imageUrl: updates.image }),
+      ...(updates.isAvailable !== undefined && { available: updates.isAvailable }),
     }
+    const res = await fetch(`/api/menu-items/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+    const json = await res.json()
+    if (!res.ok) {
+      throw new Error(json?.error || "Không thể cập nhật món ăn")
+    }
+    await refetch()
   }
 
   const deleteMenuItem = async (id: string) => {
-    try {
-      const { headers, devFallback } = await buildAuthHeaders()
-      const url = devFallback ? `/api/menu-items/${id}?role=admin` : `/api/menu-items/${id}`
-      const response = await fetch(url, {
-        method: "DELETE",
-        headers: headers,
-      })
-
-      const raw = await response.json()
-      if (raw?.ok || raw?.success) {
-        setMenuItems((prev) => prev.filter((item) => item.id !== id))
-      } else {
-        throw new Error(raw?.error || "Failed to delete menu item")
-      }
-    } catch (err) {
-      console.error("Error deleting menu item:", err)
-      throw err
+    const res = await fetch(`/api/menu-items/${id}`, { method: "DELETE" })
+    const json = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      throw new Error(json?.error || "Không thể xóa món ăn")
     }
+    // Optimistic update
+    setMenuItems((prev) => prev.filter((m) => m.id !== id))
   }
-
-  useEffect(() => {
-    fetchMenuItems()
-  }, [])
 
   return {
     menuItems,
     loading,
     error,
-    refetch: fetchMenuItems,
     createMenuItem,
     updateMenuItem,
     deleteMenuItem,
+    refetch,
   }
 }

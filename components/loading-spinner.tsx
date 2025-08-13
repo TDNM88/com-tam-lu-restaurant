@@ -3,9 +3,11 @@ import { Loader2 } from "lucide-react"
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg"
   text?: string
+  className?: string
+  iconClassName?: string
 }
 
-export function LoadingSpinner({ size = "md", text }: LoadingSpinnerProps) {
+export function LoadingSpinner({ size = "md", text, className, iconClassName }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-8 h-8",
@@ -13,8 +15,8 @@ export function LoadingSpinner({ size = "md", text }: LoadingSpinnerProps) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-8">
-      <Loader2 className={`${sizeClasses[size]} animate-spin text-orange-500`} />
+    <div className={`flex flex-col items-center justify-center p-8 ${className ?? ""}`}>
+      <Loader2 className={`${sizeClasses[size]} animate-spin text-orange-500 ${iconClassName ?? ""}`} />
       {text && <p className="mt-2 text-sm text-gray-600">{text}</p>}
     </div>
   )

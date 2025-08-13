@@ -1,18 +1,18 @@
 export interface MenuItem {
   id: string
   name: string
-  shortName: string
+  shortName?: string
   description: string
   price: number
-  image: string
+  image?: string
   category: string
-  rating: number
-  prepTime: string
-  isPopular: boolean
-  isFree: boolean
+  rating?: number
+  prepTime?: string
+  isPopular?: boolean
+  isFree?: boolean
   isAvailable: boolean
-  createdAt: string
-  updatedAt: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface Order {
