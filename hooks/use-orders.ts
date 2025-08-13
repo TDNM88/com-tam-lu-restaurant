@@ -1,47 +1,62 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
-export interface Order {
+export interface OrderItem {
   id: string
-  tableNumber: string
-  status: "pending" | "preparing" | "ready" | "completed" | "cancelled"
-  notes: string | null
-  orderTime: string
-  completedAt: string | null
-  totalAmount: number
-  items: string[]
-  rawItems: Array<{
-    menuItemId: string | null
-    name: string
-    quantity: number
-    unitPrice: number
-    subtotal: number
-    note: string | null
-    imageUrl: string | null
-  }>
+  name: string
+  price: number
+  quantity: number
+  notes?: string
 }
 
-export function useOrders(tableNumber?: string) {
-  const [orders, setOrders] = useState<Order[]>([])
+export interface OrderDTO {
+  id: string
+  tableNumber: number
+  items: OrderItem[]
+  totalAmount: number
+  status: "pending" | "preparing" | "ready" | "completed" | "cancelled"
+  customerName?: string
+  notes?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type OrderStatus = OrderDTO["status"]
+
+export interface CreateOrderPayload {
+  tableNumber: number
+  items: OrderItem[]
+  totalAmount: number
+  customerName?: string
+  notes?: string
+}
+
+export interface UpdateOrderPayload {
+  status?: OrderStatus
+  notes?: string
+}
+
+export function useOrders() {
+  const [orders, setOrders] = useState<OrderDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async (filters?: { status?: string; table?: string }) => {
     try {
       setLoading(true)
       setError(null)
 
-      const url = new URL("/api/orders", window.location.origin)
-      if (tableNumber) {
-        url.searchParams.set("table", tableNumber)
-      }
+      const params = new URLSearchParams()
+      if (filters?.status) params.append("status", filters.status)
+      if (filters?.table) params.append("table", filters.table)
 
-      const response = await fetch(url.toString(), {
+      const response = await fetch(`/api/orders?${params.toString()}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
+        cache: "no-store",
       })
 
       if (!response.ok) {
@@ -50,10 +65,10 @@ export function useOrders(tableNumber?: string) {
 
       const result = await response.json()
 
-      if (result.success) {
-        setOrders(result.data || [])
+      if (result.success && Array.isArray(result.data)) {
+        setOrders(result.data)
       } else {
-        throw new Error(result.error || "Failed to fetch orders")
+        throw new Error(result.error || "Invalid response format")
       }
     } catch (err: any) {
       console.error("useOrders fetch error:", err)
@@ -62,22 +77,12 @@ export function useOrders(tableNumber?: string) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  const createOrder = async (orderData: {
-    tableNumber: string
-    items: Array<{
-      menuItemId: string
-      name: string
-      quantity: number
-      unitPrice: number
-      subtotal?: number
-      note?: string
-    }>
-    totalAmount: number
-    notes?: string
-  }) => {
+  const createOrder = useCallback(async (orderData: CreateOrderPayload): Promise<OrderDTO | null> => {
     try {
+      setError(null)
+
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
@@ -92,27 +97,61 @@ export function useOrders(tableNumber?: string) {
 
       const result = await response.json()
 
-      if (result.success) {
-        // Refresh orders after creating
-        await fetchOrders()
-        return result.data
+      if (result.success && result.data) {
+        const newOrder = result.data
+        setOrders((prev) => [newOrder, ...prev])
+        return newOrder
       } else {
         throw new Error(result.error || "Failed to create order")
       }
     } catch (err: any) {
       console.error("Create order error:", err)
-      throw err
+      setError(err.message || "Failed to create order")
+      return null
     }
-  }
+  }, [])
 
-  const updateOrderStatus = async (orderId: string, status: Order["status"]) => {
+  const updateOrderStatus = useCallback(async (orderId: string, updates: UpdateOrderPayload): Promise<boolean> => {
     try {
+      setError(null)
+
       const response = await fetch(`/api/orders/${orderId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify(updates),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+
+      if (result.success && result.data) {
+        const updatedOrder = result.data
+        setOrders((prev) => prev.map((order) => (order.id === orderId ? updatedOrder : order)))
+        return true
+      } else {
+        throw new Error(result.error || "Failed to update order")
+      }
+    } catch (err: any) {
+      console.error("Update order error:", err)
+      setError(err.message || "Failed to update order")
+      return false
+    }
+  }, [])
+
+  const deleteOrder = useCallback(async (orderId: string): Promise<boolean> => {
+    try {
+      setError(null)
+
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
 
       if (!response.ok) {
@@ -122,21 +161,21 @@ export function useOrders(tableNumber?: string) {
       const result = await response.json()
 
       if (result.success) {
-        // Refresh orders after updating
-        await fetchOrders()
-        return result.data
+        setOrders((prev) => prev.filter((order) => order.id !== orderId))
+        return true
       } else {
-        throw new Error(result.error || "Failed to update order status")
+        throw new Error(result.error || "Failed to delete order")
       }
     } catch (err: any) {
-      console.error("Update order status error:", err)
-      throw err
+      console.error("Delete order error:", err)
+      setError(err.message || "Failed to delete order")
+      return false
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchOrders()
-  }, [tableNumber])
+  }, [fetchOrders])
 
   return {
     orders,
@@ -145,5 +184,6 @@ export function useOrders(tableNumber?: string) {
     refetch: fetchOrders,
     createOrder,
     updateOrderStatus,
+    deleteOrder,
   }
 }
