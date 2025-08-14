@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
 import { useMenuItems } from "@/hooks/use-menu-items"
 import { useOrders } from "@/hooks/use-orders"
 import { useTableFromQR } from "@/hooks/use-table-from-qr"
@@ -26,6 +27,7 @@ export function MobileOptimizedInterface({ tableNumber: tableNumberProp }: { tab
   const { tableNumber } = useTableFromQR(tableNumberProp)
   const { menuItems = [], loading: menuLoading } = useMenuItems()
   const { createOrder } = useOrders()
+  const router = useRouter()
 
   const [cart, setCart] = useState<CartItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -134,6 +136,12 @@ export function MobileOptimizedInterface({ tableNumber: tableNumberProp }: { tab
       clearCart()
       setOrderNotes("")
       setIsCartOpen(false)
+      try {
+        if (tableNumber) {
+          window.localStorage.setItem("tableNumber", String(tableNumber))
+          router.push(`/order-status?tableNumber=${encodeURIComponent(String(tableNumber))}`)
+        }
+      } catch {}
     } catch (error: any) {
       console.error("Error submitting order:", error)
       toast.error(error.message || "Có lỗi xảy ra khi đặt món")

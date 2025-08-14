@@ -10,6 +10,7 @@ import { useOrders } from "@/hooks/use-orders"
 import { useRealtimeOrders } from "@/hooks/use-realtime-orders"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Clock, CheckCircle, AlertCircle, DollarSign, ChefHat, Bell } from "lucide-react"
+import { MenuManager } from "@/components/admin/menu-manager"
 
 export function AdminDashboard() {
   const { orders = [], loading, refetch } = useOrders()
@@ -295,15 +296,7 @@ export function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="menu">
-            <Card>
-              <CardHeader>
-                <CardTitle>Quản lý thực đơn</CardTitle>
-                <CardDescription>Thêm, sửa, xóa các món ăn trong thực đơn</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-gray-500 py-8">Tính năng quản lý thực đơn sẽ được phát triển</p>
-              </CardContent>
-            </Card>
+            <MenuManager />
           </TabsContent>
 
           <TabsContent value="analytics">

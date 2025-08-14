@@ -8,7 +8,7 @@ export async function GET() {
     const { data: menuItems, error } = await supabase
       .from("menu_items")
       .select("*")
-      .eq("is_available", true)
+      .eq("available", true)
       .order("category", { ascending: true })
       .order("name", { ascending: true })
 
@@ -26,7 +26,7 @@ export async function GET() {
         price: item.price,
         category: item.category,
         image: item.image_url,
-        isAvailable: item.is_available,
+        isAvailable: item.available,
         isPopular: item.is_popular || false,
         isFree: item.price === 0,
         prepTime: item.prep_time || "10-15 phút",
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         price,
         category,
         image_url: imageUrl,
-        is_available: isAvailable,
+        available: isAvailable,
       })
       .select()
       .single()
